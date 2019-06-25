@@ -51,6 +51,7 @@ class Octo_Cat:
         # Invincible after shot
         self.life_lost_time = 0
 
+
     # move info
     def update(self, event):
         if event.type == pygame.KEYDOWN:
@@ -125,6 +126,7 @@ class Straight_Rope_Horizontal(Rope):
             self.y += self.velocity
         pygame.draw.line(screen, COLORS[3], [0, self.y], [640, self.y], 5)
 
+
         # checks if the player and the rope collided
         def judge(self, octo_cat):
             if(self.y > (octo_cat.y) and self.y < (octo_cat.y + 20)):
@@ -155,6 +157,7 @@ def open():
     text1 = font1.render("Jump the Rope", False, (255, 255, 255))
     font2 = pygame.font.SysFont(None, 40)
     text2 = font1.render("Press any Key to Start", False, (255, 255, 255))
+
 
     while endFlag == False:
         screen.fill((0, 0, 0))
@@ -207,8 +210,8 @@ if octo_cat.move_right == True:
 
 # make the instrances of ropes and dots
 if (time_elapsed == 20):
-            straight_rope = Straight_Rope(0,0,3)
-            ropes.append(straight_rope)
+        straight_rope = Straight_Rope(0,0,3)
+        ropes.append(straight_rope)
         if (time_elapsed == 300):
             straight_rope_horizontal = Straight_Rope_Horizontal(0,0,3)
             ropes.append(straight_rope_horizontal)
@@ -228,6 +231,7 @@ if (time_elapsed == 20):
             shooting_star4 = Shooting_Star(10,random.randrange(480),random.randrange(5) + 5,random.randrange(10) - 5)
             ropes.append(shooting_star4)
 
+
         #move all the ropes and dots
         for rope in ropes:
             rope.update()
@@ -235,6 +239,7 @@ if (time_elapsed == 20):
                 ropes.remove(rope)
             if(time_elapsed % 1000 == 0) and time_elapsed != 0:
                 rope.velocity += 1
+
 
         #if the player is jumping, do not check if it collided with ropes or dots
         if(octo_cat.immunity == True):
@@ -257,6 +262,7 @@ if (time_elapsed == 20):
             screen.blit(heart_image,(i * 30,50))
         pygame.display.update()
     quit(time_elapsed,force_quit)
+
 
 #when quitting the game
 def quit(score,force_quit):
