@@ -39,11 +39,11 @@ class CountDownTimer:
             return
 
         while self.minutes >= 0 and self.seconds >= 0:
-            print('r残り時間: {}:{:0>2}'.format(self.minutes, self.seconds), end='')
+            print('\r残り時間: {}:{:0>2}'.format(self.minutes, self.seconds), end='')
             self.seconds -= 1
             if self.seconds < 0:
                 self.minutes -= 1
-                self.seconds - 59
+                self.seconds = 59
             if self.minutes < 0:
                 break
             time.sleep(1)
