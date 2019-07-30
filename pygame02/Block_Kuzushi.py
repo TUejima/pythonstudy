@@ -6,6 +6,7 @@ import sys
 import pygame.mixer
 SCREEN = Rect(0, 0, 400, 400)
 
+
 # バドルのクラス
 class Paddle(pygame.sprite.Sprite):
     def __init__(self, filename):
@@ -13,9 +14,12 @@ class Paddle(pygame.sprite.Sprite):
         self.image = pygame.image.load(filename).convert()
         self.rect = self.image.get_rect()
         self.rect.bottom = SCREEN.bottom - 20          # パドルのy座標
+
     def update(self):
-        self.rect.centerx = pygame.mouse.get_pos()[0]  # マウスのx座標をパドルのx座標に
+        self.rect.centerx = pygame.mouse.get_pos()[0]
+        # マウスのx座標をパドルのx座標に
         self.rect.clamp_ip(SCREEN)                     # ゲーム画面内のみで移動
+
 
 # ボールのクラス
 class Ball(pygame.sprite.Sprite):
@@ -60,10 +64,12 @@ class Ball(pygame.sprite.Sprite):
         # パドルとの反射(左端:135度方向, 右端:45度方向, それ以外:線形補間)
         if self.rect.colliderect(self.paddle.rect) and self.dy > 0:
             self.hit = 0                                # 連続ヒットを0に戻す
-            (x1, y1) = (self.paddle.rect.left - self.rect.width, self.angle_left)
+            (x1, y1) = (
+                self.paddle.rect.left - self.rect.width, self.angle_left
+            )
             (x2, y2) = (self.paddle.rect.right, self.angle_right)
             x = self.rect.left                          # ボールが当たった位置
-            y = (float(y2-y1)/(x2-x1)) * (x - x1) + y1  # 線形補間
+            y = (float(y2 - y1) / (x2 - x1)) * (x - x1) + y1  # 線形補間
             angle = math.radians(y)                     # 反射角度
             self.dx = self.speed * math.cos(angle)
             self.dy = -self.speed * math.sin(angle)
@@ -77,27 +83,29 @@ class Ball(pygame.sprite.Sprite):
         # ボールと衝突したブロックリストを取得
         blocks_collided = pygame.sprite.spritecollide(self, self.blocks, True)
         if blocks_collided:  # 衝突ブロックがある場合
-            oldrect = self.rect
+            o = self.rect
             for block in blocks_collided:
                 # ボールが左から衝突
-                if oldrect.left < block.rect.left < oldrect.right < block.rect.right:
+                if o.left < block.rect.left < o.right < block.rect.right:
                     self.rect.right = block.rect.left
                     self.dx = -self.dx
                 # ボールが右から衝突
-                if block.rect.left < oldrect.left < block.rect.right < oldrect.right:
+                if block.rect.left < o.left < block.rect.right < o.right:
                     self.rect.left = block.rect.right
                     self.dx = -self.dx
                 # ボールが上から衝突
-                if oldrect.top < block.rect.top < oldrect.bottom < block.rect.bottom:
+                if o.top < block.rect.top < o.bottom < block.rect.bottom:
                     self.rect.bottom = block.rect.top
                     self.dy = -self.dy
                 # ボールが下から衝突
-                if block.rect.top < oldrect.top < block.rect.bottom < oldrect.bottom:
+                if block.rect.top < o.top < block.rect.bottom < o.bottom:
                     self.rect.top = block.rect.bottom
                     self.dy = -self.dy
                 self.block_sound.play()     # 効果音を鳴らす
                 self.hit += 1               # 衝突回数
-                self.score.add_score(self.hit * 10)   # 衝突回数に応じてスコア加点
+                self.score.add_score(self.hit * 10)
+                # 衝突回数に応じてスコア加点
+
 
 # ブロックのクラス
 class Block(pygame.sprite.Sprite):
@@ -108,24 +116,39 @@ class Block(pygame.sprite.Sprite):
         self.rect.left = SCREEN.left + x * self.rect.width
         self.rect.top = SCREEN.top + y * self.rect.height
 
+
 # スコアのクラス
 class Score():
     def __init__(self, x, y):
         self.sysfont = pygame.font.SysFont(None, 20)
         self.score = 0
         (self.x, self.y) = (x, y)
+
     def draw(self, screen):
-        img = self.sysfont.render("SCORE:"+str(self.score), True, (255,255,250))
+        img = self.sysfont.render(
+            "SCORE:" + str(self.score), True, (255, 255, 250)
+        )
         screen.blit(img, (self.x, self.y))
+
     def add_score(self, x):
         self.score += x
+
 
 def main():
     pygame.init()
     screen = pygame.display.set_mode(SCREEN.size)
-    Ball.paddle_sound = pygame.mixer.Sound("C:/Users/n1270184/pyworks/pythonstudy/pygame02/flashing.wav")    # パドルにボールが衝突した時の効果音取得
-    Ball.block_sound = pygame.mixer.Sound("C:/Users/n1270184/pyworks/pythonstudy/pygame02/flying_pan.wav")    # ブロックにボールが衝突した時の効果音取得
-    Ball.gameover_sound = pygame.mixer.Sound("C:/Users/n1270184/pyworks/pythonstudy/pygame02/badend1.wav")    # ゲームオーバー時の効果音取得
+    Ball.paddle_sound = pygame.mixer.Sound(
+        "C:/Users/n1270184/MainStudy/pythonstudy/pygame02/flashing.wav"
+    )
+    # パドルにボールが衝突した時の効果音取得
+    Ball.block_sound = pygame.mixer.Sound(
+        "C:/Users/n1270184/MainStudy/pythonstudy/pygame02/flying_pan.wav"
+    )
+    # ブロックにボールが衝突した時の効果音取得
+    Ball.gameover_sound = pygame.mixer.Sound(
+        "C:/Users/n1270184/MainStudy/pythonstudy/pygame02/badend1.wav"
+    )
+    # ゲームオーバー時の効果音取得
     group = pygame.sprite.RenderUpdates()  # 描画用のスプライトグループ
     blocks = pygame.sprite.Group()       # 衝突判定用のスプライトグループ
     Paddle.containers = group
@@ -138,12 +161,12 @@ def main():
             Block("block.png", x, y)
 
     score = Score(10, 10)    # スコアを画面(10, 10)に表示
-    Ball("ball.png", paddle, blocks, score) # ボールを作成
+    Ball("ball.png", paddle, blocks, score)  # ボールを作成
     clock = pygame.time.Clock()
 
     while (1):
         clock.tick(60)      # フレームレート(60fps)
-        screen.fill((0,20,0))
+        screen.fill((0, 20, 0))
         group.update()        # 全てのスプライトグループを更新
         group.draw(screen)    # 全てのスプライトグループを描画
         score.draw(screen)  # スコアを描画
